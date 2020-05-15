@@ -2,8 +2,7 @@ class ConverterController < ApplicationController
   include Koreanumbers::Converter
   String.include Koreanumbers::Converter
   def index
-    @message ||= "type in a valid Korean number
-
+    @message ||= "
 Base numbers:
 일: 1, 이: 2, 삼: 3, 사: 4, 오: 5, 육: 6, 칠: 7, 팔: 8, 구: 9
 
@@ -29,20 +28,20 @@ Examples:
 "
   end
 
-  def new
-    @message = "Result is
-    hangul to number: #{hangul.han_to_i}
-    number to hangul: #{number.to_han}"
-    @out = true
-    render :index
-  end
+  # def new
+  #   @message = "Result is
+  #   hangul to number: #{hangul.han_to_i}
+  #   number to hangul: #{number.to_han}"
+  #   @out = true
+  #   render :index
+  # end
 
-  private 
-  def hangul
-    params[:hangul]
-  end
+  # private 
+  # def hangul
+  #   params[:hangul]
+  # end
 
-  def number
-    params[:number]
-  end
+  # def number
+  #   params[:number]
+  # end
 end

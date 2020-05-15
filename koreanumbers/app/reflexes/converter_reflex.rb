@@ -1,10 +1,25 @@
 # frozen_string_literal: true
 
 class ConverterReflex < ApplicationReflex
-  def test
-   @test = "hello reflex"
+  
+  def input
+    @input = element[:value]
+    if @input == ''
+      @out = ''
+      return
+    end
+
+    begin
+       @out = if @input.to_i == 0
+                @input.han_to_i
+              else
+                @input.to_han
+              end
+    rescue StandardError => e
+      @out = ''
+    end
   end
-    # Add Reflex methods in this file.
+  # Add Reflex methods in this file.
   #
   # All Reflex instances expose the following properties:
   #
