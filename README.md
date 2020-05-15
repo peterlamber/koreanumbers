@@ -9,4 +9,6 @@ The folder <code>koreanumbers</code> contains a rails app wich uses stimulus-ref
 The ruby file <code>koreanumbers-test.rb</code> is a basic implementation as a commandline program.
 
 Demo:
+
+
 ![](/intro.gif)
