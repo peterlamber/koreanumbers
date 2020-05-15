@@ -1,0 +1,14 @@
+<% # <button data-reflex="click->ConverterReflex#test" > test </button> %>
+<% if @out.nil? %>
+<%= form_for :converter, url: { action: :new }, method: :get do |f|   %>
+  <%= label_tag(:q, "Convert to number:") %>
+  <%= text_field_tag(:hangul, "사십삼") %>
+  </br>
+  <%= label_tag(:q, "Convert to hangul:") %>
+  <%= text_field_tag(:number, 505) %>
+  </br>
+  <%= f.submit 'convert' %>
+<% end %>
+<% end %>
+
+<%=  text_area_tag :message, @message, size: "80x30", disabled: true  %>

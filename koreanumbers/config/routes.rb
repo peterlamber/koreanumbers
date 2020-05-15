@@ -1,3 +1,6 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  # get 'home', to: 'converter#index'
+  # get 'to_num', to: 'converter#number'
+  resources :converter
+  root to: 'converter#index'
 end
