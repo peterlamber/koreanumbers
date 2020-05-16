@@ -1,71 +1,77 @@
+
 # Author: Peter Lamber
-# Hangul to Number <=> Number to Hangul 
+# Hangul to Number <=> Number to Hangul
 
 module Koreanumbers
   module Converter
-    NUMBERS = { 일: 1, 이: 2, 삼: 3, 사: 4, 오: 5, 육: 6, 칠: 7, 팔: 8, 구: 9, 십: 10, 백: 100, 천: 1000, 만: 10_000, 억: 100_000_000, 조: 1_000_000_000_000 }
-    UNIT={십: 1, 백: 2, 천: 3, 만: 4, 억: 8, 조: 12 }
+    NUMBERS = { 일: 1, 이: 2, 삼: 3, 사: 4, 오: 5, 육: 6, 칠: 7, 팔: 8, 구: 9, 십: 10, 백: 100, 천: 1000, 만: 10_000, 억: 100_000_000, 조: 1_000_000_000_000 }.freeze
+    UNIT = { 십: 1, 백: 2, 천: 3, 만: 4, 억: 8, 조: 12 }.freeze
     def han_to_i
       num = 1
       part = []
       result = []
-      nums = self.chars.map { |n| NUMBERS[n.to_sym]}
-      nums.each_with_index do|n,i |    
+      return 0 if chars.size == 1 && chars[0] == "공"
+      nums = chars.map { |n| NUMBERS[n.to_sym] }
+      nums.each_with_index do |n, i|
         num = n if n < 10
-        if n > 9 && n < 10000
+        if n > 9 && n < 10_000
           part.push(n *= num)
-          nums.size-1 != i ? num = 1 : num = 0
+          num = nums.size - 1 != i ? 1 : 0
         end
 
-        if n >= 10000      
-          if part.size == 0
-            result.push(n*num)
-          else
-            result.push(num*n) if n == 1
-            result.push(num*n) if num != 1
-            result.push(part.sum * n)
-          end
-          part = []
-          nums.size-1 != i ? num = 1 : num = 0
-        end   
+        next unless n >= 10_000
+
+        if part.empty?
+          result.push(n * num)
+        else
+          result.push(num * n) if n == 1
+          result.push(num * n) if num != 1
+          result.push(part.sum * n)
+        end
+        part = []
+        num = nums.size - 1 != i ? 1 : 0
       end
-      result.push(part.push(num).sum).sum 
+      result.push(part.push(num).sum).sum
     end
 
     def to_han
+      return "죄송합니다, maximum is 조" if self.to_i.digits.size > 16
       my_res = []
-      
+
       res = self
       string = ''
       prev_num = 0
-      digits=res.to_i.digits
-      size=digits.size-1
+      digits = res.to_i.digits
+      return "공" if digits.size == 1 && res.to_i == 0
+      size = digits.size - 1
 
-      size.step(0,-1) do |i| 
+      size.step(0, -1) do |i|
         digit = digits[i]
-        
-        string << NUMBERS.key(digit).to_s if digit != 1 
+
+        string << NUMBERS.key(digit).to_s if digit != 1
         string << NUMBERS.key(digit).to_s if i == 0 && digit == 1
 
-        string << NUMBERS.key(digit).to_s if digit == 1 && ( i == 8 || i == 12)
+        string << NUMBERS.key(digit).to_s if digit == 1 && (i == 8 || i == 12)
         string << NUMBERS.key(digit).to_s if digit == 1 && i == 4 && i != size
 
-        if digit == 0 
-          string << UNIT.key(i).to_s if prev_num != 0 && (i == 12 || i == 8 || i == 4)
-          prev_num = 0
-          next 
+        if digit == 0
+          if prev_num != 0 && (i == 12 || i == 8 || i == 4)
+            string << UNIT.key(i).to_s
+            prev_num = 0
+          end
+          next
         end
         prev_num = digit
 
-        if i > 12 && i-12 < 4
-            string << UNIT.key(i-12).to_s
-        elsif i > 8 && i-8 < 4
-            string << UNIT.key(i-8).to_s 
-        elsif i > 4 && i-4 < 4
-            string << UNIT.key(i-4).to_s  
+        if i > 12 && i - 12 < 4
+          string << UNIT.key(i - 12).to_s
+        elsif i > 8 && i - 8 < 4
+          string << UNIT.key(i - 8).to_s
+        elsif i > 4 && i - 4 < 4
+          string << UNIT.key(i - 4).to_s
         end
-
         string << UNIT.key(i).to_s unless UNIT.key(i).nil?
+        prev_num = 0 if i == 12 || i == 8 || i == 4
       end
 
       string
@@ -92,26 +98,26 @@ end
 #   part = []
 #   result = []
 #   nums = p.chars.map { |n| @numbers[n.to_sym]}
-#   nums.each_with_index do|n,i |    
+#   nums.each_with_index do|n,i |
 #     num = n if n < 10
 #     if n > 9 && n < 10000
 #       part.push(n *= num)
 #       nums.size-1 != i ? num = 1 : num = 0
 #     end
 
-#     if n >= 10000      
+#     if n >= 10000
 #       if part.size == 0
-#       	result.push(n*num)
+#         result.push(n*num)
 #       else
 #         result.push(num*n) if n == 1
 #         result.push(num*n) if num != 1
-#       	result.push(part.sum * n)
+#         result.push(part.sum * n)
 #       end
 #       part = []
 #       nums.size-1 != i ? num = 1 : num = 0
-#     end   
+#     end
 #   end
-#   result.push(part.push(num).sum).sum 
+#   result.push(part.push(num).sum).sum
 # end
 
 # unit={십: 1, 백: 2, 천: 3, 만: 4, 억: 8, 조: 12 }
@@ -123,28 +129,28 @@ end
 #   digits=res.digits
 #   size=digits.size-1
 
-#   size.step(0,-1) do |i| 
+#   size.step(0,-1) do |i|
 #     digit = digits[i]
-    
-#     string << @numbers.key(digit).to_s if digit != 1 
+
+#     string << @numbers.key(digit).to_s if digit != 1
 #     string << @numbers.key(digit).to_s if i == 0 && digit == 1
 
 #     string << @numbers.key(digit).to_s if digit == 1 && ( i == 8 || i == 12)
 #     string << @numbers.key(digit).to_s if digit == 1 && i == 4 && i != size
 
-#     if digit == 0 
+#     if digit == 0
 #       string << unit.key(i).to_s if prev_num != 0 && (i == 12 || i == 8 || i == 4)
 #       prev_num = 0
-#       next 
+#       next
 #     end
 #     prev_num = digit
 
 #     if i > 12 && i-12 < 4
 #         string << unit.key(i-12).to_s
 #     elsif i > 8 && i-8 < 4
-#         string << unit.key(i-8).to_s 
+#         string << unit.key(i-8).to_s
 #     elsif i > 4 && i-4 < 4
-#         string << unit.key(i-4).to_s  
+#         string << unit.key(i-4).to_s
 #     end
 
 #     string << unit.key(i).to_s unless unit.key(i).nil?
@@ -172,7 +178,7 @@ end
 #   # if res == result[i]
 #   #   p "#{i} good"
 #   # else
-#   #   p "#{i} nope" 
+#   #   p "#{i} nope"
 #   #   p "O" + result[i]
 #   #   p "X" + res
 #   # end
