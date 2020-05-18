@@ -6,6 +6,9 @@ This is a little app to translate korean to numbers and the reverse, originated 
 
 The folder <code>koreanumbers</code> contains a rails app wich uses stimulus-reflex (a rails framework to get reactive pages without the need of javascript).
 
+Also running here as a heroku app:
+https://koreanumbers.herokuapp.com/
+
 The ruby file <code>koreanumbers-test.rb</code> is a basic implementation as a commandline program.
 
 Demo:
